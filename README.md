@@ -289,3 +289,63 @@ sudo mkdir -p /db # For Db files
 ```
 sudo mount /dev/database-vg/db-lv /db
 ```
+
+## Step 14 - Install and Configure MySQL (Database Server):
+
+Update package lists:
+
+```
+sudo apt update
+```
+
+Install MySQL server:
+
+```
+sudo apt install mysql-server -y
+```
+
+Start and enable the MySQL service:
+
+```
+sudo systemctl start mysql
+```
+
+```
+sudo systemctl enable mysql
+```
+
+```
+sudo systemctl status mysql
+```
+
+It’s recommended that you run a security script that comes pre-installed with MySQL. This script will remove some insecure default settings and lock down access to your database system.
+
+Open up MYSQL Prompt
+
+```
+sudo mysql
+```
+
+Then run the following ALTER USER command to change the root user’s authentication method to one that uses a password. The following example changes the authentication method to `mysql_native_password`:
+
+```
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+```
+
+After making this change, exit the MySQL prompt:
+
+```
+exit
+```
+
+Start the interactive script by running:
+
+```
+sudo mysql_secure_installation
+```
+
+This will ask if you want to configure the `VALIDATE PASSWORD PLUGIN`.
+
+`Note`: Enabling this feature is something of a judgment call. If enabled, passwords which don’t match the specified criteria will be rejected by MySQL with an error. It is safe to leave validation disabled, but you should always use strong, unique passwords for database credentials.
+
+When prompted, confirm installation by typing `Y`, and then `ENTER` to series of question regarding removal of anonymous user and test database.
