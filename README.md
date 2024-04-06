@@ -4,7 +4,7 @@
 
 This project aims to deploy a web solution using WordPress on Ubuntu servers hosted on Amazon EC2 instances. It involves setting up two EC2 instances, configuring block devices, creating logical volumes, installing WordPress, and configuring a MySQL database server.
 
-## Prerequisites:
+## Prerequisites
 
 - Access to an AWS account with permissions to create EC2 instances and manage security groups.
 
@@ -12,9 +12,9 @@ This project aims to deploy a web solution using WordPress on Ubuntu servers hos
 
 - Understanding of web server configurations and WordPress installation.
 
-## Step-by-Step Implementation:
+## Step-by-Step Implementation
 
-### Step 1 - Launch and Configure EC2 Instances:
+### Step 1 - Launch and Configure EC2 Instances
 
 - Create two Ubuntu EC2 instances and set the `Configure storage` to `10`.
 
@@ -22,7 +22,7 @@ This project aims to deploy a web solution using WordPress on Ubuntu servers hos
 
 ![alt text](images/image.png)
 
-## Step 2 - Create and Attach EBS Volumes:
+## Step 2 - Create and Attach EBS Volumes
 
 - In the AWS Management Console, create three EBS volumes of 10 GiB each in the same AZ as the web server instance.
 
@@ -38,7 +38,7 @@ Note: When creating `EBS` or external volume, `they must be in the same availabi
 
 ![alt text](images/image1.png)
 
-## Step 3 - Verify EBS Volume Attachment (Web Server):
+## Step 3 - Verify EBS Volume Attachment (Web Server)
 
 - Connect to the web server instance (Remember to update your package first, once you connect - `sudo apt update`)
 
@@ -50,7 +50,7 @@ lsblk
 
 ![alt text](images/image4.png)
 
-## Step 4 - Partition EBS Volumes (Web Server):
+## Step 4 - Partition EBS Volumes (Web Server)
 
 Create a single partition on each of the 3 disks using the `gdisk` command (The aim here is to create a logical partition)
 
@@ -83,7 +83,7 @@ lsblk
 
 ![alt text](images/image6.png)
 
-## Step 5 - Install LVM Package (Web Server):
+## Step 5 - Install LVM Package (Web Server)
 
 Install the Logical Volume Manager (LVM) package using the following command:
 
@@ -95,7 +95,7 @@ sudo apt update
 sudo apt install lvm2 -y
 ```
 
-## Step 6 - Check Available Partitions (Web Server):
+## Step 6 - Check Available Partitions (Web Server)
 
 Use the command below to list all available physical partitions for LVM management.
 
@@ -105,7 +105,7 @@ sudo lvmdiskscan
 
 ![alt text](images/image7.png)
 
-## Step 7 - Create Physical Volumes (Web Server):
+## Step 7 - Create Physical Volumes (Web Server)
 
 - Use the `sudo pvcreate` command to mark each of the newly created partitions as physical volumes (PVs) that LVM can use.
 
@@ -121,7 +121,7 @@ sudo pvs
 
 ![alt text](images/image8.png)
 
-## Step 8 - Create Volume Group (Web Server):
+## Step 8 - Create Volume Group (Web Server)
 
 - Use the `sudo vgcreate` command to create a volume group (VG) named `webdata-vg` that will combine the three PVs.
 
@@ -137,7 +137,7 @@ sudo vgs
 
 ![alt text](images/image9.png)
 
-## Step 9 - Create Logical Volumes (Web Server):
+## Step 9 - Create Logical Volumes (Web Server)
 
 - Use the `sudo lvcreate` command to create two logical volumes (LVs) within the `webdata-vg` volume group:
 
@@ -161,7 +161,7 @@ sudo lvs
 
 ![alt text](images/image10.png)
 
-## Step 10 - Format Logical Volumes (Web Server):
+## Step 10 - Format Logical Volumes (Web Server)
 
 - Use the sudo mkfs.ext4 command to format the logical volumes with the ext4 filesystem:
 
@@ -175,7 +175,7 @@ sudo mkfs.ext4 /dev/webdata-vg/logs-lv
 
 ![alt text](images/image11.png)
 
-## Step 11 - Create Mount Points and Mount Logical Volumes (Web Server):
+## Step 11 - Create Mount Points and Mount Logical Volumes (Web Server)
 
 - Create directories to serve as mount points for the logical volumes:
 
@@ -213,7 +213,7 @@ sudo mount /dev/webdata-vg/logs-lv /var/log
 sudo rsync -av /home/recovery/logs/. /var/log
 ```
 
-## Step 12 - Update fstab File (Web Server):
+## Step 12 - Update fstab File (Web Server)
 
 Edit the `/etc/fstab` file using vi or another preferred text editor to ensure the mount points persist across reboots:
 
@@ -251,7 +251,7 @@ If you don't get any feedback this means the configuration is okay.
 sudo systemctl daemon-reload
 ```
 
-## Step 13 - Database Server Setup:
+## Step 13 - Database Server Setup
 
 Repeat steps 2-12 i.e (creating and attaching EBS volumes, partitioning, LVM configuration, mounting) on the database server instance, but with the following modifications:
 
@@ -290,7 +290,7 @@ sudo mkdir -p /db # For Db files
 sudo mount /dev/database-vg/db-lv /db
 ```
 
-## Step 14 - Install and Configure MySQL (Database Server):
+## Step 14 - Install and Configure MySQL (Database Server)
 
 Update package lists:
 
@@ -350,7 +350,7 @@ This will ask if you want to configure the `VALIDATE PASSWORD PLUGIN`.
 
 When prompted, confirm installation by typing `Y`, and then `ENTER` to series of question regarding removal of anonymous user and test database.
 
-## Step 15 - Create a MySQL Database and User (Database Server):
+## Step 15 - Create a MySQL Database and User (Database Server)
 
 Connect to the MySQL server using the following command, replacing password with the actual root password you set:
 
@@ -396,7 +396,7 @@ Exit the MySQL shell:
 exit
 ```
 
-## Step 16 - Configure MySQL Bind Address and Restart MySQL Service (Database Server):
+## Step 16 - Configure MySQL Bind Address and Restart MySQL Service (Database Server)
 
 - By default, MySQL might only listen on localhost connections. To allow access from the web server, edit the MySQL configuration file:
 
@@ -407,3 +407,172 @@ sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
 - Find the line `bind-address = 127.0.0.1` and either comment it out or replace it with `bind-address = 0.0.0.0`. The latter allows connections from any IP address, which is suitable for development purposes but use caution in a production environment. Consider restricting access to the web server's IP for improved security.
 
 - Save and close the file.
+
+## Step 17 - Install MySQL Client on Web Server and Test connection from the Web Server
+
+- To manage MySQL databases directly from the web server instance, install the MySQL client package:
+
+```
+sudo apt install mysql-client -y
+```
+
+- Try connecting to the MySQL server from the web server using the mysql command, replacing with the database server's IP address and the credentials created:
+
+```
+sudo mysql -h <database_server_ip> -u wordpress -p
+```
+
+If the connection is successful, you'll be prompted for the password and see the MySQL prompt. This confirms that the web server can communicate with the database server.
+
+Exit the MySQL shell if you connected for testing:
+
+```
+exit
+```
+
+Reminder: Make sure port `80` (HTTP) is open in the web server's security group to allow incoming web traffic.
+
+## Step 18 - Install and Configure WordPress (Web Server):
+
+Update Package lists:
+
+```
+sudo apt update
+```
+
+Install Apache web server and PHP dependencies:
+
+```
+#Install dependencies
+sudo apt install software-properties-common apt-transport-https -y
+```
+
+```
+#Add the PPA
+sudo add-apt-repository ppa:ondrej/php -y
+```
+
+```
+#Now to install PHP 8.1 FPM and it's modules
+
+sudo apt install php8.1-fpm php8.1-common php8.1-mysql php8.1-xml php8.1-xmlrpc php8.1-curl php8.1-gd php8.1-imagick php8.1-cli php8.1-dev php8.1-imap php8.1-mbstring php8.1-opcache php8.1-soap php8.1-zip php8.1-intl php8.1-bcmath
+```
+
+```
+sudo apt install apache2 \
+                 ghostscript \
+                 libapache2-mod-php \
+                 mysql-server \
+                 php \
+                 php-bcmath \
+                 php-curl \
+                 php-imagick \
+                 php-intl \
+                 php-json \
+                 php-mbstring \
+                 php-mysql \
+                 php-xml \
+                 php-zip
+```
+
+Start and enable the Apache service to ensure it runs at boot time:
+
+```
+sudo systemctl start apache2
+```
+
+```
+sudo systemctl enable apache2
+```
+
+Create a directory to hold the downloaded WordPress files:
+
+```
+sudo mkdir wordpress
+```
+
+```
+cd wordpress
+```
+
+## Step 19 - Download and Extract Wordpress (Web Server):
+
+Download the latest WordPress tarball:
+
+```
+sudo wget http://wordpress.org/latest.tar.gz
+```
+
+![alt text](images/image18.png)
+
+Extract the downloaded archive:
+
+```
+sudo tar -xzvf latest.tar.gz
+```
+
+Remove the downloaded archive to save space:
+
+```
+sudo rm -rf latest.tar.gz
+```
+
+Copy the WordPress configuration file `(wp-config-sample.php)` to `wp-config.php` and configure it according to your MySQL database details:
+
+```
+sudo cp wordpress/wp-config-sample.php wordpress/wp-config.php
+```
+
+```
+sudo vi wordpress/wp-config.php
+```
+
+![alt text](images/image19.png)
+
+```
+cd wordpress
+```
+
+```
+sudo vi wp-config.php
+```
+
+![alt text](images/image20.png)
+
+```
+cd ..
+```
+
+Copy the entire WordPress directory structure to the web server's document root (`/var/www/html`):
+
+```
+sudo cp -R wordpress /var/www/html/
+```
+
+To ensure Apache has write access to the WordPress directory, change ownership to the Apache user:
+
+```
+cd ..
+```
+
+```
+sudo chown -R www-data:www-data /var/www/html/wordpress
+```
+
+Restart the Apache web server to apply any configuration changes and make WordPress accessible:
+
+```
+sudo systemctl restart apache2
+```
+
+```
+sudo ls /var/www/html/wordpress
+```
+
+## Step 20 - Access WordPress Admin Panel:
+
+Open a web browser and navigate to the public IP address or domain name of your web server instance, followed by `/wordpress/wp-admin`. You should see the WordPress login screen.
+
+Use the MySQL username (`wordpress`) and password you created earlier to log in to the WordPress admin panel and complete the setup process.
+
+![alt text](images/wordpress.png)
