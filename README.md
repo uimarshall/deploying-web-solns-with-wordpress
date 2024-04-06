@@ -82,3 +82,25 @@ lsblk
 ```
 
 ![alt text](images/image6.png)
+
+## Step 5 - Install LVM Package (Web Server):
+
+Install the Logical Volume Manager (LVM) package using the following command:
+
+```
+sudo apt update
+```
+
+```
+sudo apt install lvm2 -y
+```
+
+## Step 6 - Check Available Partitions (Web Server):
+
+Use the command below to list all available physical partitions for LVM management.
+
+```
+sudo lvmdiskscan
+```
+
+![alt text](images/image7.png)
