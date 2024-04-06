@@ -349,3 +349,49 @@ This will ask if you want to configure the `VALIDATE PASSWORD PLUGIN`.
 `Note`: Enabling this feature is something of a judgment call. If enabled, passwords which don’t match the specified criteria will be rejected by MySQL with an error. It is safe to leave validation disabled, but you should always use strong, unique passwords for database credentials.
 
 When prompted, confirm installation by typing `Y`, and then `ENTER` to series of question regarding removal of anonymous user and test database.
+
+## Step 15 - Create a MySQL Database and User (Database Server):
+
+Connect to the MySQL server using the following command, replacing password with the actual root password you set:
+
+```
+sudo mysql -u root -p
+```
+
+Inside the MySQL shell, create a database named wordpress to store your WordPress website data:
+
+```
+CREATE DATABASE wordpress;
+```
+
+Create a MySQL user named wordpress who can access the wordpress database. Replace `Password01@` with a secure `password` of your choice:
+
+```
+CREATE USER `wordpress`@`%` IDENTIFIED BY 'password';
+```
+
+Grant all privileges on the wordpress database to the wordpress user:
+
+```
+GRANT ALL ON wordpress.* TO 'wordpress'@'%';
+```
+
+Flush privileges to ensure changes take effect:
+
+```
+FLUSH PRIVILEGES;
+```
+
+Show existing databases to verify the creation of the wordpress database:
+
+```
+SHOW DATABASES;
+```
+
+![alt text](images/image17.png)
+
+Exit the MySQL shell:
+
+```
+exit
+```
