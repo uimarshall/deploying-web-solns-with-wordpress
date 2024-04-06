@@ -104,3 +104,35 @@ sudo lvmdiskscan
 ```
 
 ![alt text](images/image7.png)
+
+## Step 7 - Create Physical Volumes (Web Server):
+
+- Use the `sudo pvcreate` command to mark each of the newly created partitions as physical volumes (PVs) that LVM can use.
+
+```
+sudo pvcreate /dev/xvdbf1 /dev/xvdbg1 /dev/xvdbh1
+```
+
+- Verify the physical volumes by running the comand below. which will list all available PVs.
+
+```
+sudo pvs
+```
+
+![alt text](images/image8.png)
+
+## Step 8 - Create Volume Group (Web Server):
+
+- Use the `sudo vgcreate` command to create a volume group (VG) named `webdata-vg` that will combine the three PVs.
+
+```
+sudo vgcreate webdata-vg /dev/xvdbf1 /dev/xvdbg1 /dev/xvdbh1
+```
+
+- Verify the volume group created using:
+
+```
+sudo vgs
+```
+
+![alt text](images/image9.png)
