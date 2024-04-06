@@ -136,3 +136,27 @@ sudo vgs
 ```
 
 ![alt text](images/image9.png)
+
+## Step 9 - Create Logical Volumes (Web Server):
+
+- Use the `sudo lvcreate` command to create two logical volumes (LVs) within the `webdata-vg` volume group:
+
+  i. `apps-lv`: This will store your WordPress application files and allocate half of the total available space in the volume group.
+
+  ii. `logs-lv`: This will store log data and use the remaining space.
+
+```
+sudo lvcreate -n apps-lv -L 15G webdata-vg # Adjust -L based on your needs
+```
+
+```
+sudo lvcreate -n logs-lv -L 14G webdata-vg
+```
+
+- Verify the Logical Volumes created by listing all logical volumes using:
+
+```
+sudo lvs
+```
+
+![alt text](images/image10.png)
