@@ -250,3 +250,42 @@ If you don't get any feedback this means the configuration is okay.
 ```
 sudo systemctl daemon-reload
 ```
+
+## Step 13 - Database Server Setup:
+
+Repeat steps 2-12 i.e (creating and attaching EBS volumes, partitioning, LVM configuration, mounting) on the database server instance, but with the following modifications:
+
+- Mount the logical volume to a directory like `/db` instead of `/var/www/html` and `db-lv` instead of `apps-lv`.
+
+Under step 8: You should change the command to
+
+```
+sudo vgcreate database-vg /dev/xvdbf1 /dev/xvdbg1 /dev/xvdbh1
+```
+
+Under step 9, you should have
+
+```
+sudo lvcreate -n db-lv -L 20G database-vg # Adjust -L based on your needs
+
+```
+
+Under step 10:
+
+```
+sudo mkfs.ext4 /dev/database-vg/db-lv
+```
+
+- There's no need to create a separate volume for logs on the database server.
+
+![alt text](images/image16.png)
+
+Under step 11, we should now have the below for Database
+
+```
+sudo mkdir -p /db # For Db files
+```
+
+```
+sudo mount /dev/database-vg/db-lv /db
+```
