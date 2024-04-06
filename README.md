@@ -160,3 +160,17 @@ sudo lvs
 ```
 
 ![alt text](images/image10.png)
+
+## Step 10 - Format Logical Volumes (Web Server):
+
+- Use the sudo mkfs.ext4 command to format the logical volumes with the ext4 filesystem:
+
+```
+sudo mkfs.ext4 /dev/webdata-vg/apps-lv
+```
+
+```
+sudo mkfs.ext4 /dev/webdata-vg/logs-lv
+```
+
+![alt text](images/image11.png)
