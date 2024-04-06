@@ -21,3 +21,31 @@ This project aims to deploy a web solution using WordPress on Ubuntu servers hos
 - Configure Security group to allow inbound traffic on ports 22 (SSH) and 80 (HTTP) for the web server, and port 3306 (MySQL) for the database server.
 
 ![alt text](images/image.png)
+
+## Step 2 - Create and Attach EBS Volumes:
+
+- In the AWS Management Console, create three EBS volumes of 10 GiB each in the same AZ as the web server instance.
+
+- Attach these volumes to the web server instance.
+
+![alt text](images/image2.png)
+
+![alt text](images/image3.png)
+
+Note: `EBS` is an extra storage we attach to our server just as we attach external `Hard Disk` to our `local machine`.
+
+Note: When creating `EBS` or external volume, `they must be in the same availability zone`. In this this case, we have `us-east-1d` as shown in the image below:
+
+![alt text](images/image1.png)
+
+## Step 3 - Verify EBS Volume Attachment (Web Server):
+
+- Connect to the web server instance (Remember to update your package first, once you connect - `sudo apt update`)
+
+- Use the command below to list all block devices and verify that the attached volumes (`xvdbf`, `xvdbg`, `xvdbh`) are present.
+
+```
+lsblk
+```
+
+![alt text](images/image4.png)
