@@ -174,3 +174,79 @@ sudo mkfs.ext4 /dev/webdata-vg/logs-lv
 ```
 
 ![alt text](images/image11.png)
+
+## Step 11 - Create Mount Points and Mount Logical Volumes (Web Server):
+
+- Create directories to serve as mount points for the logical volumes:
+
+```
+sudo mkdir -p /var/www/html # For WordPress files
+```
+
+```
+sudo mkdir -p /home/recovery/logs # For log backups
+```
+
+- Mount the apps-lv logical volume to the /var/www/html directory, where your websites files will reside:
+
+```
+sudo mount /dev/webdata-vg/apps-lv /var/www/html/
+```
+
+Before mounting the logs-lv volume for log files: Use `rsync` to back up existing log files from `/var/log` to a secure location like `/home/recovery/logs`:
+
+```
+sudo rsync -av /var/log/. /home/recovery/logs/
+```
+
+- Hence, mount `/var/log` on `logs-lv` logical volume
+
+```
+sudo mount /dev/webdata-vg/logs-lv /var/log
+```
+
+![alt text](images/image12.png)
+
+- Now restore the previously backed-up logs from `/home/recovery/logs back to /var/log:`
+
+```
+sudo rsync -av /home/recovery/logs/. /var/log
+```
+
+## Step 12 - Update fstab File (Web Server):
+
+Edit the `/etc/fstab` file using vi or another preferred text editor to ensure the mount points persist across reboots:
+
+Extract the `UUID` of the device using
+
+```
+sudo blkid
+```
+
+![alt text](images/image13.png)
+
+![alt text](images/image14.png)
+
+- Add entries for the logical volumes, replacing UUID with your device UUID.
+
+```
+sudo vi /etc/fstab
+```
+
+![alt text](images/image15.png)
+
+- Save and close the `fastab` file
+
+- verify that the mount configurations work as expected:
+
+```
+sudo mount -a
+```
+
+If you don't get any feedback this means the configuration is okay.
+
+- Restart the systemd service to pick up changes:
+
+```
+sudo systemctl daemon-reload
+```
