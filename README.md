@@ -395,3 +395,15 @@ Exit the MySQL shell:
 ```
 exit
 ```
+
+## Step 16 - Configure MySQL Bind Address and Restart MySQL Service (Database Server):
+
+- By default, MySQL might only listen on localhost connections. To allow access from the web server, edit the MySQL configuration file:
+
+```
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+
+- Find the line `bind-address = 127.0.0.1` and either comment it out or replace it with `bind-address = 0.0.0.0`. The latter allows connections from any IP address, which is suitable for development purposes but use caution in a production environment. Consider restricting access to the web server's IP for improved security.
+
+- Save and close the file.
