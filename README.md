@@ -49,3 +49,36 @@ lsblk
 ```
 
 ![alt text](images/image4.png)
+
+## Step 4 - Partition EBS Volumes (Web Server):
+
+Create a single partition on each of the 3 disks using the `gdisk` command (The aim here is to create a logical partition)
+
+```
+sudo gdisk /dev/xvdbf
+```
+
+```
+sudo gdisk /dev/xvdbg
+```
+
+```
+sudo gdisk /dev/xvdbh
+```
+
+Refer to the gdisk [documentation](https://linux.die.net/man/8/gdisk) for detailed usage: gdisk documentation.
+
+Follow the interactive prompts to create partitions, ensuring sufficient space for Wordpress installation.
+
+![alt text](images/image5.png)
+
+`Note` do same for `xvdbg` and `xvdbh`
+
+- Verify the partitions
+
+```
+lsblk
+
+```
+
+![alt text](images/image6.png)
