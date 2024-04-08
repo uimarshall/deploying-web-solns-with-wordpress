@@ -18,7 +18,7 @@ This project aims to deploy a web solution using WordPress on Ubuntu servers hos
 
 - Create two Ubuntu EC2 instances and set the `Configure storage` to `10`.
 
-- Configure Security group to allow inbound traffic on ports 22 (SSH) and 80 (HTTP) for the web server, and port 3306 (MySQL) for the database server.
+- Configure the Security group to allow inbound traffic on ports 22 (SSH) and 80 (HTTP) for the web server, and port 3306 (MySQL) for the database server.
 
 ![alt text](images/image.png)
 
@@ -32,9 +32,9 @@ This project aims to deploy a web solution using WordPress on Ubuntu servers hos
 
 ![alt text](images/image3.png)
 
-Note: `EBS` is an extra storage we attach to our server just as we attach external `Hard Disk` to our `local machine`.
+Note: `EBS` is an extra storage we attach to our server just as we attach an external `Hard Disk` to our `local machine`.
 
-Note: When creating `EBS` or external volume, `they must be in the same availability zone`. In this this case, we have `us-east-1d` as shown in the image below:
+Note: When creating `EBS` or external volume, `they must be in the same availability zone`. In this case, we have `us-east-1d` as shown in the image below:
 
 ![alt text](images/image1.png)
 
@@ -68,7 +68,7 @@ sudo gdisk /dev/xvdbh
 
 Refer to the gdisk [documentation](https://linux.die.net/man/8/gdisk) for detailed usage: gdisk documentation.
 
-Follow the interactive prompts to create partitions, ensuring sufficient space for Wordpress installation.
+Follow the interactive prompts to create partitions, ensuring sufficient space for WordPress installation.
 
 ![alt text](images/image5.png)
 
@@ -113,7 +113,7 @@ sudo lvmdiskscan
 sudo pvcreate /dev/xvdbf1 /dev/xvdbg1 /dev/xvdbh1
 ```
 
-- Verify the physical volumes by running the comand below. which will list all available PVs.
+- Verify the physical volumes by running the command below. which will list all available PVs.
 
 ```
 sudo pvs
@@ -187,7 +187,7 @@ sudo mkdir -p /var/www/html # For WordPress files
 sudo mkdir -p /home/recovery/logs # For log backups
 ```
 
-- Mount the apps-lv logical volume to the /var/www/html directory, where your websites files will reside:
+- Mount the apps-lv logical volume to the /var/www/html directory, where the files of your website will reside:
 
 ```
 sudo mount /dev/webdata-vg/apps-lv /var/www/html/
@@ -280,7 +280,7 @@ sudo mkfs.ext4 /dev/database-vg/db-lv
 
 ![alt text](images/image16.png)
 
-Under step 11, we should now have the below for Database
+Under step 11, we should now have the below for the Database
 
 ```
 sudo mkdir -p /db # For Db files
@@ -348,11 +348,11 @@ This will ask if you want to configure the `VALIDATE PASSWORD PLUGIN`.
 
 `Note`: Enabling this feature is something of a judgment call. If enabled, passwords which don’t match the specified criteria will be rejected by MySQL with an error. It is safe to leave validation disabled, but you should always use strong, unique passwords for database credentials.
 
-When prompted, confirm installation by typing `Y`, and then `ENTER` to series of question regarding removal of anonymous user and test database.
+When prompted, confirm installation by typing `Y`, and then `ENTER` to a series of questions regarding removal of anonymous user and test database.
 
 ## Step 15 - Create a MySQL Database and User (Database Server)
 
-Connect to the MySQL server using the following command, replacing password with the actual root password you set:
+Connect to the MySQL server using the following command, replacing the password with the actual root password you set:
 
 ```
 sudo mysql -u root -p
